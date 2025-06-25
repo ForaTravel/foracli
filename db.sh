@@ -91,8 +91,13 @@ check_staging_safety() {
 }
 
 seed_db(){
+    
     echo "setting up local user for login"
-    docker exec -it fora_web python local_setup.py
+    if [ "$FORA_ENV" = "local" ]; then
+        docker exec -it fora_web python local_setup.py
+    else
+        echo "${RED}cannot seed {$FORA_ENV} db"
+    fi
 }
 
 run_linter(){
@@ -234,8 +239,12 @@ if [ $# -lt 1 ]; then
 fi
 
 # Check if first argument is one that doesn't require an environment to be set explicitly
-if [[ "$1" =~ ^(up|down|restart|status|reset|envvalidate|envpull|help|setup)$ ]]; then
+if [[ "$1" =~ ^(up|down|restart|status|reset|envvalidate|envpull|help|setup|runpytest|rundjango|lint|seed)$ ]]; then
     COMMAND=$1
+    if [ -n "$2" ]; then # $2 is set, env is set in args
+        FORA_ENV=$2
+        export FORA_ENV=$2
+    fi
     # $FORA_ENV should have been set at the start at some point.
     if [ -z "$FORA_ENV" ]; then
         #pulling environment from the local history
@@ -248,15 +257,16 @@ if [[ "$1" =~ ^(up|down|restart|status|reset|envvalidate|envpull|help|setup)$ ]]
         set_env $FORA_ENV   
     fi
 
+
+
 elif [[ "$1" =~ ^(dbswap|dbclear|envset)$ ]]; then
     COMMAND=$1
     #commands that are 
     #if env not set, it will have been preserved from last time
     
-    if [ -n "$2" ]; then
+    if [ -n "$2" ]; then # $2 is set, env is set in args
         FORA_ENV=$2
         export FORA_ENV=$2
-        
     fi
 
     if ! check_env "$FORA_ENV"; then
@@ -332,7 +342,7 @@ case "$COMMAND" in
         swap_database "$FORA_ENV"
         ;;
     "seed")
-        seed_db
+        seed_db "$FORA_ENV"
         ;;
     "lint")
         run_linter
