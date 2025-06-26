@@ -187,6 +187,14 @@ clear_database() {
         exit 1
     fi
 
+    echo "${RED}WARNING: THIS WILL DELETE ALL YOUR LOCAL DATA!!!!!!!${NC}"
+    read -p "ARE YOU SURE YOU WANT THIS? (y/N) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "${YELLOW}Reset cancelled${NC}"
+        exit 1
+    fi
+
     echo "${YELLOW}Stopping all containers...${NC}"
     docker-compose -f "$DOCKER_COMPOSE" down
 
@@ -315,6 +323,13 @@ case "$COMMAND" in
         ;;
     "envset")
         set_env "$FORA_ENV"
+        ;;
+    "rebuild")
+        echo "${YELLOW}Stopping all containers...${NC}"
+        docker-compose -f "$DOCKER_COMPOSE" down
+        clear_database local
+
+        docker-compose -f docker/docker-compose.dev.yml up -d --build
         ;;
     "status")
         show_status
