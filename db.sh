@@ -330,6 +330,8 @@ case "$COMMAND" in
         clear_database local
 
         docker-compose -f docker/docker-compose.dev.yml up -d --build
+        open_logs_window
+
         ;;
     "status")
         show_status
@@ -367,9 +369,11 @@ case "$COMMAND" in
         ;;
     "setup")
         echo "\n${GREEN}Setting up for the first time, setting env to local and double checking dir"
-        set_env "local"
+        #can we ensure that the db is fully migrated?
         ensure_fora_setup
         ensure_env_files
+        set_env "local"
+        seed_db "local"
         ;;
     *)
         echo "${RED}Invalid command: $COMMAND${NC}"
