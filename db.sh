@@ -105,11 +105,26 @@ run_linter(){
 }
 
 run_pytest(){
-    docker exec -it fora_web python -m pytest --reuse-db -v --no-header --no-summary -s
+    read -p "Enter test path (or press Enter to run all tests): " test_path
+    if [ -n "$test_path" ]; then
+        # If a path is provided, run tests for that specific path
+        docker exec -it fora_web python -m pytest "$test_path" --reuse-db -v --no-header --no-summary -s
+    else
+        # If no path provided, run all tests
+        docker exec -it fora_web python -m pytest --reuse-db -v --no-header --no-summary -s
+    fi
+    #docker exec -it fora_web python -m pytest --reuse-db -v --no-header --no-summary -s
 }
 
 run_django(){
-    docker exec -it fora_web python manage.py test --keepdb --settings=test_settings
+    read -p "Enter Django filepath (or press Enter to run shell): " filepath
+    if [ -n "$filepath" ]; then
+        # If a command is provided, run that specific Django command
+        echo docker exec -it fora_web python manage.py test --keepdb --settings=test_settings "$filepath"
+    else
+        # If no command provided, run Django shell
+        docker exec -it fora_web python manage.py test --keepdb --settings=test_settings
+    fi
 }
 # Function to show usage
 show_usage() {
