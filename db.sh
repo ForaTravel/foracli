@@ -300,7 +300,7 @@ echo "running fora CLI command \"$COMMAND\" on $FORA_ENV - fora_web \$ENVIRONMEN
 ensure_fora_setup
 ensure_env_files
 
-
+echo "${RED}Still in Alpha mode, use at own risk 🥴 ${NC}"
 
 if [ -z "$COMMAND" ]; then
     echo "${RED}No command specified${NC}"
