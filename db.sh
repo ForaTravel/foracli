@@ -247,7 +247,7 @@ if [ $# -lt 1 ]; then
 fi
 
 # Check if first argument is one that doesn't require an environment to be set explicitly
-if [[ "$1" =~ ^(up|down|restart|status|reset|envvalidate|envpull|help|setup|runpytest|rundjango|lint|seed|list)$ ]]; then
+if [[ "$1" =~ ^(up|down|restart|status|reset|rebuild|envvalidate|envpull|help|setup|runpytest|rundjango|lint|seed|list)$ ]]; then
     COMMAND=$1
     if [ -n "$2" ]; then # $2 is set, env is set in args
         FORA_ENV=$2
