@@ -316,13 +316,6 @@ case "$COMMAND" in
     "envset")
         set_env "$FORA_ENV"
         ;;
-    "rebuild")
-        echo "${YELLOW}Stopping all containers...${NC}"
-        docker-compose -f "$DOCKER_COMPOSE" down
-        clear_database local
-
-        docker-compose -f docker/docker-compose.dev.yml up -d --build
-        ;;
     "status")
         show_status
         ;;
