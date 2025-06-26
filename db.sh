@@ -94,7 +94,7 @@ seed_db(){
     
     echo "setting up local user for login"
     if [ "$FORA_ENV" = "local" ]; then
-        docker exec -it fora_web python local_setup.py
+        docker exec -it fora_web python manage.py local_setup
     else
         echo "${RED}cannot seed {$FORA_ENV} db"
     fi
@@ -239,7 +239,7 @@ if [ $# -lt 1 ]; then
 fi
 
 # Check if first argument is one that doesn't require an environment to be set explicitly
-if [[ "$1" =~ ^(up|down|restart|status|reset|envvalidate|envpull|help|setup|runpytest|rundjango|lint|seed)$ ]]; then
+if [[ "$1" =~ ^(up|down|restart|status|reset|envvalidate|envpull|help|setup|runpytest|rundjango|lint|seed|list)$ ]]; then
     COMMAND=$1
     if [ -n "$2" ]; then # $2 is set, env is set in args
         FORA_ENV=$2
@@ -331,6 +331,10 @@ case "$COMMAND" in
         ;;
     "help")
         show_usage
+        ;;
+    "list")
+        echo "Available commands:"
+        grep -E '^\s*"?[a-zA-Z0-9_-]+"?\)' "$0" | sed 's/)//;s/^[ \t]*//;s/"//g'
         ;;
     "envvalidate")
         ensure_env_files
