@@ -1,11 +1,13 @@
 ```
-Alec recently adopted this tool and he encountered the following issues, so make sure you double check all of these:
+Alec recently adopted this tool and he encountered the following issues, 
+so make sure you double check all of these:
 
-1. Make sure you change the db script path one aliases to in your .zshrc
-2. Make sure you name and set the values of the .env.local properly(postgres_host)
-3. Make sure that you set $ENVIRONMENT in .zshrc
-4. Wait for fora migration to finish before running fora seed
-5. Ensure you've add the s3 env vars or that will break local
+1. Make sure your .zshrc or .bashrc has the db.sh on the PATH
+2. Make sure your .zshrc or .bashrc has the scrip aliased(check below for example)
+3. Make sure you name and set the values of the .env.local and .env.staging properly next to the current .env (examples in this folder)
+4. Make sure that you set $ENVIRONMENT in .zshrc
+5. Wait for fora migration to finish before running fora seed
+6. Ensure you've add the s3 env vars or that will break local
 
 
 ```
