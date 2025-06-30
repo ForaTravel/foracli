@@ -103,12 +103,21 @@ seed_db(){
 run_linter(){
     docker exec -it fora_web ./lint.sh
 }
-
+run_django(){
+    read -p "Enter Django command (or press Enter to run shell): " django_command
+    if [ -n "$django_command" ]; then
+        # If a command is provided, run that specific Django command
+        docker exec -it fora_web python manage.py $django_command
+    else
+        # If no command provided, run Django shell
+        docker exec -it fora_web python manage.py shell
+    fi
+}
 run_pytest(){
     read -p "Enter test path (or press Enter to run all tests): " test_path
     if [ -n "$test_path" ]; then
         # If a path is provided, run tests for that specific path
-        docker exec -it fora_web python -m pytest "$test_path" --reuse-db -v --no-header --no-summary -s
+        docker exec -it fora_web python -m pytest "$test_path" --reuse-db -v --no-header -s
     else
         # If no path provided, run all tests
         docker exec -it fora_web python -m pytest --reuse-db -v --no-header --no-summary -s
@@ -116,7 +125,7 @@ run_pytest(){
     #docker exec -it fora_web python -m pytest --reuse-db -v --no-header --no-summary -s
 }
 
-run_django(){
+run_django_test(){
     read -p "Enter Django filepath (or press Enter to run shell): " filepath
     if [ -n "$filepath" ]; then
         # If a command is provided, run that specific Django command
@@ -132,18 +141,17 @@ show_usage() {
     echo "       $0 {command}"
     echo
     echo "Commands:"
-    echo "  up                - Start all containers and the database (default)"
-    echo "  down              - Stop all containers"
-    echo "  status            - Show database status"
-    echo "  dbclear           - Clear the database volume (local only)"
-    echo "  dbswap (dev,staging,local)            - Swap database to specified environment (restarts all containers too)"
-    echo "  seed              - seeds local db with some data"
-    echo "  todo: envpull     - pulls all env vars from the cloud"
-    echo "  todo: envvalidate - validates that you have all the right env vars to run the full backend."
+    echo "  setup (staging,local)               - Start all containers and the database (default)"
+    echo "  seed (local)                        - seeds local db with some data"
+    echo "  up                                  - loads specified environment"
+    echo "  dbswap (staging,local)              - Swap database to specified environment (restarts all containers too)"
+    echo ""
+    echo "For all other commands, run fora list"
+    echo ""
     echo "Environment (optional, defaults to 'local'):"
     echo "  local     - Use local database configuration"
     echo "  staging   - Use staging database configuration"
-    echo "  dev       - Use dev database configuration"
+    echo "  dev       - Use dev database configuration (support upcoming)"
     echo
     echo "Examples:"
     echo "  $0 up local       - Start local database and containers"
@@ -262,7 +270,7 @@ if [ $# -lt 1 ]; then
 fi
 
 # Check if first argument is one that doesn't require an environment to be set explicitly
-if [[ "$1" =~ ^(up|down|restart|status|reset|rebuild|envvalidate|envpull|help|setup|runpytest|rundjango|lint|seed|list)$ ]]; then
+if [[ "$1" =~ ^(up|down|restart|status|reset|rebuild|envvalidate|envpull|help|setup|pytest|djangotest|django|lint|seed|list)$ ]]; then
     COMMAND=$1
     if [ -n "$2" ]; then # $2 is set, env is set in args
         FORA_ENV=$2
@@ -376,11 +384,14 @@ case "$COMMAND" in
     "lint")
         run_linter
         ;;
-    "rundjango")
-        run_django
+    "djangotest")
+        run_django_test
         ;;
-    "runpytest")
+    "pytest")
         run_pytest
+        ;;
+    "django")
+        run_django
         ;;
     "setup")
         echo "\n${GREEN}Setting up for the first time, setting env to local and double checking dir"

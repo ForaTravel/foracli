@@ -5,7 +5,7 @@ Alec recently adopted this tool and he encountered the following issues, so make
 2. Make sure you name and set the values of the .env.local properly(postgres_host)
 3. Make sure that you set $ENVIRONMENT in .zshrc
 4. Wait for fora migration to finish before running fora seed
-5. Ensure people add the s3 env vars or that will break local
+5. Ensure you've add the s3 env vars or that will break local
 
 
 ```
@@ -14,12 +14,14 @@ Alec recently adopted this tool and he encountered the following issues, so make
 add this to your .bashrc or .zshrc
 
 ```
-alias fora="sh /users/luciencd/code/foracli/db.sh"
+alias fora="sh /users/YOUR-USERNAME-HERE/YOUR-CODE-DIR-HERE/foracli/db.sh"
 source ~/.zshrc
 ```
 
 find yourself in the backend repo.
-
+```
+➜  fora-advisorportal git:(lighter_cli_pr) fora
+```
 Just start running commands
 
 ```
