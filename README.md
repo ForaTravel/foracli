@@ -14,6 +14,7 @@ Alec recently adopted this tool and he encountered the following issues, so make
 add this to your .bashrc or .zshrc
 
 ```
+export PATH="/users/luciencd/code/fora-advisorportal/scripts/db.sh:$PATH"
 alias fora="sh /users/YOUR-USERNAME-HERE/YOUR-CODE-DIR-HERE/foracli/db.sh"
 source ~/.zshrc
 ```

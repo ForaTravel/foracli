@@ -165,6 +165,7 @@ show_usage() {
     echo "  DB_ENV=<env> docker-compose -f $DOCKER_COMPOSE logs -f postgres"
 }
 set_env() {
+    touch ~/.fora_env
     local env=$1
     if check_env "$env"; then
         echo "exporting FORA_ENV"
